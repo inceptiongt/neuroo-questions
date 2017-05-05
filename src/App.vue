@@ -1,8 +1,10 @@
 <template>
   <div id="app">
-    <side-nav></side-nav>
-    <!-- <el-button @click.native="startHacking">Let's do it</el-button> -->
-    <router-view></router-view>
+    <el-row>
+      <side-nav></side-nav>
+      <!-- <el-button @click.native="startHacking">Let's do it</el-button> -->
+      <router-view></router-view>
+    </el-row>
   </div>
 </template>
 

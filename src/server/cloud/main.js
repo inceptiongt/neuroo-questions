@@ -9,7 +9,7 @@ Parse.Cloud.define("all", function(request, response) {
       var result = results.map(function(item,index,arr){
       	// return item.attributes;
       	var tem = item.attributes
-      	tem.id = item.id
+      	// tem.id = item.id
       	return tem
       })
       response.success(result)
@@ -19,3 +19,11 @@ Parse.Cloud.define("all", function(request, response) {
     }
   });
 });
+Parse.Cloud.define('updateQuestionsDetails', function (res, req) {
+	var object = new Parse.Object("questions");
+	object.save(res,{
+		success: function (results) {
+			response.success('OK')
+		}
+	})
+})
