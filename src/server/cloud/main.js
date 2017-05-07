@@ -12,18 +12,30 @@ Parse.Cloud.define("all", function(request, response) {
       	// tem.id = item.id
       	return tem
       })
-      response.success(result)
+      response.success(results)
     },
     error: function() {
       response.error("movie lookup failed");
     }
   });
 });
-Parse.Cloud.define('updateQuestionsDetails', function (res, req) {
+Parse.Cloud.define('updateQuestionsDetails', function (req, res) {
 	var object = new Parse.Object("questions");
-	object.save(res,{
+	object.save(req.params,{
 		success: function (results) {
 			response.success('OK')
 		}
+	})
+})
+Parse.Cloud.define('newQuestion', function (req, res) {
+  var object = new Parse.Object("questions");
+  console.log(req)
+	object.save(req.params,{
+		success: function (results) {
+			res.success('OK')
+		},
+    error: function (results) {
+      res.error('error')
+    }
 	})
 })

@@ -1,5 +1,6 @@
 <template>
   <el-col :span="22">
+    <!-- 表格起点 -->
     <el-row>
       <el-table
       :data="tableData"
@@ -43,15 +44,16 @@
         <el-table-column
         fixed="right"
         label="操作"
-        width="100">
+        width="300">
           <template scope="scope">
-            <el-button @click="editBtn(scope.row.id)" type="text" size="small">编辑</el-button>
-            <el-button @click="qusDeleteBtn()" type="text" size="small">删除</el-button>
+            <el-button @click="editBtn(scope.row.id)" type="info" size="small">编辑</el-button>
+            <el-button @click="queDeleteBtn()" type="danger" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-row>
-    <!-- Form -->
+    <!-- 表格终点 -->
+    <!-- 编辑表单起点 -->
     <el-row>
       <el-dialog :visible.sync="dialogFormVisible" top="15%" algin="left">
         <el-form ref="form" :model="gridData" label-width="50px">
@@ -60,6 +62,9 @@
               <el-radio label="单选"></el-radio>
               <el-radio label="多选"></el-radio>
             </el-radio-group>
+          </el-form-item>
+          <el-form-item label="ID">
+            <el-input v-model="gridData.id"></el-input>
           </el-form-item>
           <el-form-item label="标题">
             <el-input v-model="gridData.title"></el-input>
@@ -77,10 +82,12 @@
         <span slot="footer" class="dialog-footer">
             <el-button @click.native="">取 消</el-button>
             <el-button type="primary"  @click.native="editConfirmBtn">确定</el-button>
+            <el-button type="primary"  @click.native="newConfirmBtn">新建</el-button>
         </span>
       </el-dialog>
     </el-row>
-    <!-- quetion delete dialog -->
+    <!-- 编辑表单终点 -->
+    <!-- quetion delete dialog start-->
     <el-row>
       <el-dialog
         title="提示"
@@ -93,8 +100,12 @@
         </span>
       </el-dialog>
     </el-row>
+    <!-- quetion delete dialog end -->
+    <el-row>
+      <el-button @click="queNewBtn()" type="primary" size="large">新建问题</el-button>
+    </el-row>
   </el-col>
-      
+
 </template>
 <script>
 const Parse = require('parse')
@@ -102,13 +113,22 @@ export default {
   name: 'hello',
   data () {
     return {
-      tableData: [],
+      tableData: [
+        {
+          type: 'dfsdf',
+          name: 'fdsfsdafsdfdsf',
+          options_num: 1,
+          options: [{}],
+          address: ''
+        }
+      ],
       gridData: {
-        type: '',
-        name: '',
-        options_num: 1,
-        options: [{}],
-        address: ''
+        id: null,
+        title: '',
+        next: null,
+        type: 'single',
+        options_num: 2,
+        options: [{}, {}]
       },
       dialogTableVisible: false,
       dialogVisible: false,
@@ -152,14 +172,26 @@ export default {
         this.gridData.options.pop()
       }
     },
-    qusDeleteBtn () {
+    queDeleteBtn () {
       this.dialogVisible = true
     },
     editConfirmBtn () {
       Parse.Cloud.run('updateQuestionsDetails', {
-
         options: this.gridData.options
       }).then()
+    },
+    queNewBtn () {
+      this.dialogFormVisible = true
+    },
+    newConfirmBtn () {
+      let ques = {
+        'id': this.gridData.id,
+        'title': this.gridData.title,
+        'next': 14,
+        'type': this.gridData.type,
+        'options': this.gridData.options
+      }
+      Parse.Cloud.run('newQuestion', ques).then()
     }
   }
 }

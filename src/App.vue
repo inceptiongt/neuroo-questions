@@ -12,10 +12,10 @@
   import sideNav from './components/Nav.vue'
   const Parse = require('parse')
   Parse.initialize('testId')
-  Parse.serverURL = 'http://192.168.181.128:1337/parse'
+  Parse.serverURL = 'http://localhost:1337/parse'
   let Qus = Parse.Object.extend('questions')
   let qus = new Qus()
-  
+
   export default {
     name: 'app',
     props: {
@@ -48,13 +48,9 @@
           })
       }
     },
-    // mounted(){
-    //   return {
-    //     parse.cloud.run('allQuestions').then(function(qusList){
-    //       this.
-    //     })
-    //   }
-    // }
+    // created: function () {
+    //   this.startHacking()
+    // },
     components: { sideNav }
   }
 </script>

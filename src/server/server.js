@@ -32,7 +32,7 @@ var api = new ParseServer({
 var dashboard = new ParseDashboard({
   "apps": [
     {
-      "serverURL": "http://192.168.181.128:1337/parse",
+      "serverURL": "http://localhost:1337/parse",
       "appId": "testId",
       "masterKey": "cf5cc9b68e71d4cdc6319d3cb1f44ef4",
       "appName": "testName",
@@ -43,7 +43,7 @@ var dashboard = new ParseDashboard({
   //     "user": "neuroo",
   //     "pass": "neuroo"
   //   }
-  // ]  
+  // ]
 })
 
 var app = express();
