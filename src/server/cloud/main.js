@@ -6,12 +6,12 @@ Parse.Cloud.define("all", function(request, response) {
   // query.equalTo("id", request.params.id);
   query.find({
     success: function(results) {
-      var result = results.map(function(item,index,arr){
-      	// return item.attributes;
-      	var tem = item.attributes
-      	// tem.id = item.id
-      	return tem
-      })
+      // let result = results.map((item, index, array) => {
+      //   result.quesId = item.objectId,
+      //   result.type = item.type,
+      //   result.title = item.title,
+      //
+      // })
       response.success(results)
     },
     error: function() {
@@ -28,13 +28,14 @@ Parse.Cloud.define('updateQuestionsDetails', function (req, res) {
 	})
 })
 Parse.Cloud.define('newQuestion', function (req, res) {
-  var object = new Parse.Object("questions");
-  console.log(req)
-	object.save(req.params,{
+  const Qusetions = Parse.Object.extend("questions")
+  const questions = new Qusetions()
+	questions.save(req.params,{
 		success: function (results) {
 			res.success('OK')
 		},
     error: function (results) {
+      console.log(222222,results)
       res.error('error')
     }
 	})

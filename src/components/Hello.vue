@@ -1,5 +1,8 @@
 <template>
   <el-col :span="22">
+    <el-row>
+      <el-button @click="queNewBtn()" type="primary" size="large">新建问题</el-button>
+    </el-row>
     <!-- 表格起点 -->
     <el-row>
       <el-table
@@ -17,7 +20,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="id"
+          prop="quesId"
           label="ID"
           width="80">
         </el-table-column>
@@ -34,7 +37,7 @@
         </el-table-column>
         <el-table-column
           prop="potions"
-          label="选项"
+          label="选项个数"
           width="180">
         </el-table-column>
         <el-table-column
@@ -44,7 +47,7 @@
         <el-table-column
         fixed="right"
         label="操作"
-        width="300">
+        width="200">
           <template scope="scope">
             <el-button @click="editBtn(scope.row.id)" type="info" size="small">编辑</el-button>
             <el-button @click="queDeleteBtn()" type="danger" size="small">删除</el-button>
@@ -56,7 +59,7 @@
     <!-- 编辑表单起点 -->
     <el-row>
       <el-dialog :visible.sync="dialogFormVisible" top="15%" algin="left">
-        <el-form ref="form" :model="gridData" label-width="50px">
+        <el-form ref="form" :model="gridData" label-width="50px" align="left">
           <el-form-item label="类型">
             <el-radio-group v-model="gridData.type">
               <el-radio label="单选"></el-radio>
@@ -69,14 +72,29 @@
           <el-form-item label="标题">
             <el-input v-model="gridData.title"></el-input>
           </el-form-item>
-          <el-form-item label="选项">
+          <el-form-item label="选项个数">
             <el-input-number v-model="gridData.options_num" @change="numChangeBtn" :min="1" :max="10"></el-input-number>
           </el-form-item>
           <el-form-item label="选项">
             <template v-for="(item,index) in gridData.options_num">
-              <el-input v-model="gridData.options[index].title"></el-input>
+              <el-row>
+                <el-col :span="2">
+                  {{index+1}}
+                </el-col>
+                <el-col :span="22">
+                  <el-input v-model="gridData.options[index].title"></el-input>
+                </el-col>
+              </el-row>
               <!-- 跳转ID<el-input v-model="gridData.options[item].next" width="50px"></el-input> -->
             </template>
+          </el-form-item>
+          <el-form-item label="正确答案">
+            <el-radio-group v-if="gridData.type === '单选'" v-model="gridData.answer" v-for="(item, index) in gridData.options_num">
+              <el-radio :label="index + 1"></el-radio>
+            </el-radio-group>
+            <!-- <el-checkbox-group v-model="gridData.answers" v-for="(item, index) in gridData.options_num">
+              <el-checkbox :label="3">{{index}}</el-checkbox>
+            </el-checkbox-group> -->
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -101,9 +119,7 @@
       </el-dialog>
     </el-row>
     <!-- quetion delete dialog end -->
-    <el-row>
-      <el-button @click="queNewBtn()" type="primary" size="large">新建问题</el-button>
-    </el-row>
+
   </el-col>
 
 </template>
@@ -113,6 +129,7 @@ export default {
   name: 'hello',
   data () {
     return {
+      /* 问题列表数据 */
       tableData: [
         {
           type: 'dfsdf',
@@ -122,13 +139,16 @@ export default {
           address: ''
         }
       ],
+      /* 弹窗数据 */
       gridData: {
         id: null,
         title: '',
         next: null,
         type: 'single',
         options_num: 2,
-        options: [{}, {}]
+        options: [{}, {}],
+        answer: '',
+        answers: ''
       },
       dialogTableVisible: false,
       dialogVisible: false,
@@ -148,8 +168,12 @@ export default {
   },
   created () {
     Parse.Cloud.run('all').then((qusList) => {
-      this.tableData = qusList
-      console.log(qusList)
+      let result = qusList.map((item) => {
+        let data = item.attributes
+        // data.quesId = item.objectId
+        return data
+      })
+      this.tableData = result
     })
   },
   methods: {
@@ -185,11 +209,12 @@ export default {
     },
     newConfirmBtn () {
       let ques = {
-        'id': this.gridData.id,
+        'quesId': this.gridData.id,
         'title': this.gridData.title,
         'next': 14,
         'type': this.gridData.type,
-        'options': this.gridData.options
+        'options': this.gridData.options,
+        'answer': this.gridData.answer
       }
       Parse.Cloud.run('newQuestion', ques).then()
     }
